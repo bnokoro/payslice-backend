@@ -20,13 +20,7 @@ class TestUserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        User::create([
-            'name' => 'Employer One',
-            'email' => 'employer@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'employer',
-        ]);
-
+    
         User::create([
             'name' => 'Employee A',
             'email' => 'user@example.com',
@@ -37,6 +31,21 @@ class TestUserSeeder extends Seeder
         User::factory()->create([
            'name' => 'Test User',
            'email' => 'test@example.com',
+]);
+
+
+        User::create([
+        'name' => 'Nila',
+        'email' => 'nila@gmail.com',
+        'password' => bcrypt('password'),
+        'role' => 'user',
+]);
+
+        User::create([
+       'name' => 'Employer',
+       'email' => 'employer@example.com',
+       'password' => bcrypt('password'),
+       'role' => 'employer',
 ]);
 
     }

@@ -1,46 +1,53 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use App\Models\Payroll;
+use Barryvdh\DomPDF\Facade\Pdf;
 
-// Public route
-Route::get('/', fn () => view('welcome'))->name('home');
-
-// Authenticated + Verified users
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin()) {
-            return view('admin.dashboard');
-        }
-        return view('dashboard');
-    })->name('dashboard');
-
-    // Settings
-    Route::redirect('settings', 'settings/profile');
-    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-    Volt::route('settings/password', 'settings.password')->name('settings.password');
-    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+Route::get('/', function () {
+    return view('welcome');
 });
 
-// Admin-only routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::view('/admin', 'admin.dashboard')->name('admin.dashboard');
-});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Optional: Separate dashboards by role (if you need custom views)
-Route::middleware(['auth', 'role:employer'])->group(function () {
-    Route::view('/employer/dashboard', 'dashboard.employer')->name('employer.dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 
-Route::post('logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/login');
-})->name('logout');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', fn () => view('dashboards.admin'));
+    Route::get('/employer/dashboard', fn () => view('dashboards.employer'));
+    Route::get('/user/dashboard', fn () => view('dashboards.user'));
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', fn () => view('dashboards.admin'))->name('admin.dashboard');
+    Route::get('/employer/dashboard', fn () => view('dashboards.employer'))->name('employer.dashboard');
+    Route::get('/user/dashboard', fn () => view('dashboards.user'))->name('user.dashboard');
+});
+
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/user/payslips', function () {
+//         $payslips = Payroll::where('user_id', auth()->id())->get();
+//         return view('user.payslips.index', compact('payslips'));
+//     })->name('user.payslips');
+// });
+
+Route::get('/user/payslips/{id}/pdf', function ($id) {
+    $payslip = Payroll::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    $pdf = Pdf::loadView('user.payslips.pdf', compact('payslip'));
+
+    return $pdf->download("Payslip_{$payslip->month}.pdf");
+})->name('user.payslips.pdf');
 
 require __DIR__.'/auth.php';
-
