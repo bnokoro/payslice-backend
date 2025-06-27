@@ -23,6 +23,11 @@ Built with Laravel Breeze (Blade), SQLite (for development), and Vite.
 - Views a list of their payslips
 - Downloads individual payslips as PDF
 
+
+### 🧪 Seeded Test Users
+- Admin, Employer, and User roles included
+- Sample payroll records linked to test users
+
 ## 📦 Tech Stack
 
 - Laravel 12
@@ -40,15 +45,35 @@ Built with Laravel Breeze (Blade), SQLite (for development), and Vite.
 - MySQL
 
 🤝 Contributing
-Fork the repository
+1. Fork the repository
 
-Create your feature branch: git checkout -b feature/my-feature
+2. Create your feature branch: git checkout -b feature/my-feature
 
-Commit your changes
+3. Commit your changes
 
-Push to the branch: git push origin feature/my-feature
+4. Push to the branch: git push origin feature/my-feature
 
-Open a pull request
+5. Open a pull request
+
+
+🔧 Next Steps
+1. Admin dashboard and route protection
+
+2. Employer job posting interface
+
+3. Payslip generation by employer
+
+4. Notifications or messaging module
+
+5. Time tracking or payroll scheduling (optional modules)
+
+
+| Role     | Email                                               | Password |
+| -------- | --------------------------------------------------- | -------- |
+| Employer | [employer@example.com](mailto:employer@example.com) | password |
+| User     | [nila@gmail.com](mailto:nila@gmail.com)             | password |
+
+
 
 ## 🛠️ Setup Instructions
 
@@ -62,9 +87,3 @@ npm install && npm run dev
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-
-| Role     | Email                                               | Password |
-| -------- | --------------------------------------------------- | -------- |
-| Employer | [employer@example.com](mailto:employer@example.com) | password |
-| User     | [nila@gmail.com](mailto:nila@gmail.com)             | password |
-
